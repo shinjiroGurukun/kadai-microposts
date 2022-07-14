@@ -22,9 +22,15 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('login.post');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
-// ユーザ一覧、ユーザ詳細
-Route::group(['middleware' => ['auth']], function () {
+
+Route::group(['middleware' => ['auth']], function(){
+    Route::group(['prefix' => 'users/{id}'], function(){
+        Route::post('follow', 'UserFollowController@store')->name('user.follow');
+        Route::delete('unfollow', 'UserFollowController@destroy')->name('user.unfollow');
+        Route::get('followings', 'UsersController@follwings')->name('users.followings');
+        Route::get('followers', 'UsersController@followers')->name('users.followers');
+    });
+    // ユーザ一覧、ユーザ詳細
     Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
     Route::resource('microposts', 'MicropostsController', ['only' => ['store', 'destroy']]);
 });
-
