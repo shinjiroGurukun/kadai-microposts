@@ -81,4 +81,31 @@ class UsersController extends Controller
             'users' => $followers,
         ]);
      }
+    /**
+     * ユーザのいいね一覧ページを表示するアクション。
+     *
+     * @param  $id  ユーザのid
+     * @return \Illuminate\Http\Response
+     */
+     public function favorites($id){
+         
+         
+            // 認証済みユーザを取得
+            $thisUser = \Auth::user();
+        //  idの値でユーザを検索して取得
+        $user = User::findOrFail($id);
+        
+        // 関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
+        
+        // ユーザのいいね一覧を取得
+        $favorites = $thisUser->favorites()->paginate(10);
+        
+    
+        return view('users.favorites', [
+            'favoritePosts' => $favorites,
+            'user' => $user,
+        ]);
+     }
+     
 }

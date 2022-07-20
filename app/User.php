@@ -133,6 +133,63 @@ class User extends Authenticatable
      */
     public function loadRelationshipCounts()
     {
-        $this->loadCount(['microposts','followings','followers']);
+        $this->loadCount(['microposts','followings','followers','favorites']);
     }
+     
+    
+    /**
+     * このユーザがお気に入りしている投稿。
+     */
+     public function favorites(){
+         return $this->belongsToMany(Micropost::class,'favorites','user_id','micropost_id')->withTimestamps();
+     }
+     
+     /**
+     * $micropostIdで指定されたmicropostにいいねする。
+     *
+     * @param  int  $micropostId
+     * @return bool
+     */
+     public function favorite($micropostId){
+         
+        //すでにフォローしているか
+        $exist = $this->is_favorite($micropostId);
+        //  いいねする
+        if($exist) {
+            return false;
+        }
+        $this->favorites()->attach($micropostId);
+        return true;
+     }
+     /**
+     * $micropostIdで指定されたmicropostにいいねがあればはずす。
+     *
+     * @param  int  $micropostId
+     * @return bool
+     */
+     public function unfavorite($micropostId){
+         
+        //すでにフォローしているか
+        $exist = $this->is_favorite($micropostId);
+        //  いいねする
+        if($exist) {
+            $this->favorites()->detach($micropostId);
+            return true;
+        }
+        return false;
+     }
+     
+      /**
+     * 指定された $micropostIdの投稿をこのユーザがいいね中であるか調べる。いいね中ならtrueを返す。
+     *
+     * @param  int  $micropostId
+     * @return bool
+     */
+     
+     public function is_favorite($micropostId){
+        //いいね中の投稿に$micropostIdが存在するか
+        return $this->favorites()->where('micropost_id', $micropostId)->exists();
+     }
+     
+     
 }
