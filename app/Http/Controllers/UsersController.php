@@ -99,7 +99,7 @@ class UsersController extends Controller
         $user->loadRelationshipCounts();
         
         // ユーザのいいね一覧を取得
-        $favorites = $thisUser->favorites()->paginate(10);
+        $favorites = $user->favorites()->paginate(10);
         
     
         return view('users.favorites', [
