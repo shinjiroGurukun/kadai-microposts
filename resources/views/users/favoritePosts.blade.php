@@ -15,13 +15,14 @@
                         {{-- 投稿内容 --}}
                         <p class="mb-0">{!! nl2br(e($favoritePost->content)) !!}</p>
                     </div>
-                    <div>
+                    <div class="row">
                         @if (Auth::id() == $favoritePost->user_id)
                             {{-- 投稿削除ボタンのフォーム --}}
                             {!! Form::open(['route' => ['microposts.destroy', $favoritePost->id], 'method' => 'delete']) !!}
                                 {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}
                             {!! Form::close() !!}
                         @endif
+                        @include('favorites.favoriteBtn')
                     </div>
                 </div>
             </li>
