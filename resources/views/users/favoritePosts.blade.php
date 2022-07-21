@@ -22,7 +22,17 @@
                                 {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}
                             {!! Form::close() !!}
                         @endif
-                        @include('favorites.favoriteBtn')
+                        @if(Auth::user()->is_favorite($favoritePost->id))
+                        {{-- いいねボタン外すのフォーム --}}
+                            {!! Form::open(['route' => ['favorites.unfavorite', $favoritePost->id], 'method' => 'delete']) !!}
+                                {!! Form::submit('Unfavorite', ['class' => "btn btn-sm btn-primary"]) !!}
+                            {!! Form::close() !!}
+                        @else
+                        {{-- いいねするボタンのフォーム --}}
+                            {!! Form::open(['route' => ['favorites.favorite', $favoritePost->id]]) !!}
+                                {!! Form::submit('Favorite', ['class' => "btn btn-sm btn-success"]) !!}
+                            {!! Form::close() !!}
+                        @endif
                     </div>
                 </div>
             </li>
